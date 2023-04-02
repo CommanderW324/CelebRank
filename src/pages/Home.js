@@ -17,6 +17,7 @@ import {
   Segment,
   Sidebar,
 } from 'semantic-ui-react'
+import influencer from '../assets/influencer.jpg'
 import {Link} from 'react-router-dom'
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
@@ -25,6 +26,7 @@ const { MediaContextProvider, Media } = createMedia({
     computer: 1024,
   },
 })
+
 
 /* Heads up!
  * HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled
@@ -53,10 +55,8 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? '0.5em' : '1.5em',
       }}
     />
-    <Button primary size='huge'>
-      Get Started
-      <Icon name='right arrow' />
-    </Button>
+    
+    
   </Container>
 )
 
@@ -79,46 +79,6 @@ class DesktopContainer extends Component {
 
     return (
       <Media greaterThan='mobile'>
-        <InView onChange={this.toggleFixedMenu}>
-          <Segment
-            inverted
-            textAlign='center'
-            style={{ minHeight: 700, padding: '1em 0em' }}
-            vertical
-          >
-            <Menu
-              fixed={fixed ? 'top' : null}
-              inverted={!fixed}
-              pointing={!fixed}
-              secondary={!fixed}
-              size='large'
-            >
-              <Container>
-                <Menu.Item as='a' active>
-                  Home
-                </Menu.Item>
-                <Menu.Item as='a'><Link to="/login"> Trial </Link></Menu.Item>
-                
-                <Menu.Item as='a'>Wokr</Menu.Item>
-                <Menu.Item as='a'>Company</Menu.Item>
-                <Menu.Item as='a'>Careers</Menu.Item>
-                <Menu.Item position='right'>
-                    <Link to="/login"> 
-                        <Button as='a' inverted={!fixed}>
-                            Log in
-                        </Button>
-                    </Link>
-                  
-                    <Button as='a' inverted={!fixed} primary={fixed} style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                    </Button>
-                </Menu.Item>
-              </Container>
-            </Menu>
-            <HomepageHeading />
-          </Segment>
-        </InView>
-
         {children}
       </Media>
     )
@@ -213,56 +173,38 @@ ResponsiveContainer.propTypes = {
   children: PropTypes.node,
 }
 
-const HomepageLayout = () => (
+const HomepageLayout = (user) => (
   <ResponsiveContainer>
     <Segment style={{ padding: '8em 0em' }} vertical>
       <Grid container stackable verticalAlign='middle'>
         <Grid.Row>
           <Grid.Column width={8}>
             <Header as='h3' style={{ fontSize: '2em' }}>
-              We Help Companies and Companions
+              Need to find influencers ?
             </Header>
             <p style={{ fontSize: '1.33em' }}>
               We can give your company superpowers to do things that they never thought possible.
               Let us delight your customers and empower your needs... through pure data analytics.
             </p>
             <Header as='h3' style={{ fontSize: '2em' }}>
-              We Make Bananas That Can Dance
+              We help you discover favorite influencers and target your audiences more accurately !
             </Header>
             <p style={{ fontSize: '1.33em' }}>
-              Yes that's right, you thought it was the stuff of dreams, but even bananas can be
-              bioengineered.
+              What are you waiting for start today!
             </p>
           </Grid.Column>
           <Grid.Column floated='right' width={6}>
-            <Image bordered rounded size='large' src='/images/wireframe/white-image.png' />
+            <Image bordered rounded size='large' src={influencer} />
           </Grid.Column>
         </Grid.Row>
         <Grid.Row>
           <Grid.Column textAlign='center'>
-            <Button size='huge'>Check Them Out</Button>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-    </Segment>
-
-    <Segment style={{ padding: '0em' }} vertical>
-      <Grid celled='internally' columns='equal' stackable>
-        <Grid.Row textAlign='center'>
-          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
-            <Header as='h3' style={{ fontSize: '2em' }}>
-              "What a Company"
-            </Header>
-            <p style={{ fontSize: '1.33em' }}>That is what they all say about us</p>
-          </Grid.Column>
-          <Grid.Column style={{ paddingBottom: '5em', paddingTop: '5em' }}>
-            <Header as='h3' style={{ fontSize: '2em' }}>
-              "I shouldn't have gone with their competitor."
-            </Header>
-            <p style={{ fontSize: '1.33em' }}>
-              <Image avatar src='/images/avatar/large/nan.jpg' />
-              <b>Nan</b> Chief Fun Officer Acme Toys
-            </p>
+          <Link to="/influencers"> 
+            <Button primary size='huge'>
+              Get Started Now
+              <Icon name='right arrow' />
+            </Button>           
+          </Link>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -302,41 +244,6 @@ const HomepageLayout = () => (
         <Button as='a' size='large'>
           I'm Still Quite Interested
         </Button>
-      </Container>
-    </Segment>
-
-    <Segment inverted vertical style={{ padding: '5em 0em' }}>
-      <Container>
-        <Grid divided inverted stackable>
-          <Grid.Row>
-            <Grid.Column width={3}>
-              <Header inverted as='h4' content='About' />
-              <List link inverted>
-                <List.Item as='a'>Sitemap</List.Item>
-                <List.Item as='a'>Contact Us</List.Item>
-                <List.Item as='a'>Religious Ceremonies</List.Item>
-                <List.Item as='a'>Gazebo Plans</List.Item>
-              </List>
-            </Grid.Column>
-            <Grid.Column width={3}>
-              <Header inverted as='h4' content='Services' />
-              <List link inverted>
-                <List.Item as='a'>Banana Pre-Order</List.Item>
-                <List.Item as='a'>DNA FAQ</List.Item>
-                <List.Item as='a'>How To Access</List.Item>
-                <List.Item as='a'>Favorite X-Men</List.Item>
-              </List>
-            </Grid.Column>
-            <Grid.Column width={7}>
-              <Header as='h4' inverted>
-                Footer Header
-              </Header>
-              <p>
-                Extra space for a call to action inside the footer that could help re-engage users.
-              </p>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
       </Container>
     </Segment>
   </ResponsiveContainer>
