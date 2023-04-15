@@ -1,7 +1,7 @@
 
 
 import React, { useState } from 'react';
-import { Card, Image, Grid, Button, Item, Pagination, Statistic, Icon, Input} from 'semantic-ui-react';
+import { Card, Image, Grid, Button, Item, Pagination, Statistic, Icon, Input, Tab, Header, Dropdown} from 'semantic-ui-react';
 import { Amplify } from 'aws-amplify';
 
 import { withAuthenticator } from '@aws-amplify/ui-react';
@@ -10,7 +10,9 @@ import '@aws-amplify/ui-react/styles.css';
 import awsExports from './../aws-exports';
 import { Link, useNavigate } from 'react-router-dom';
 import influencers from '../Twitter_Data/influencers.json';
-
+import axios from 'axios'
+import { INFLUENCER_BASIC, INFLUENCER_METRIC, INFLUENCER_TOPIC_URL } from 'util/constants';
+import topics from '../Twitter_Data/topics.json'
 Amplify.configure(awsExports);
 
 function InfluencerPage({ signOut, user}) {
@@ -23,6 +25,7 @@ function InfluencerPage({ signOut, user}) {
     const [searchQuery, setSearchQuery] = useState('')
     const [searchResult, setSearchResult] = useState([])
     const [isSearch, setIsSearch] = useState(false)
+    const [topic_id, setTopicId] = useState(0)
     const navigate = useNavigate();
     const handleChange = (event, data)=>{
         setPageCount(data.activePage)
@@ -42,6 +45,18 @@ function InfluencerPage({ signOut, user}) {
         }
         setSearchResult(result);
     }
+    const handleTopic = async (topic_id) =>{
+        let result;
+        setIsSearch(true)
+        try{
+            result = await getInfluencerByTopic(topic_id);
+            console.log(result.data)
+            console.log("Test topic")
+        } catch(e){
+            console.log(e)
+        }
+        setSearchResult(result.data);
+    }
     React.useEffect(()=>{
         if(influencersList.length < num * pageCount){
             let newInfluencer = getInfluencerList(num * pageCount);
@@ -56,22 +71,48 @@ function InfluencerPage({ signOut, user}) {
         }
     }, [searchQuery])
     const influencerToDisplay = isSearch ? searchResult: influencersList.slice(num * pageCount, num * (pageCount + 1));
+    const tabPanes = [{ menuItem: 'Find by name', render: () => <Tab.Pane>{inputSearch}</Tab.Pane>},
+{ menuItem: 'Find by Topic', render: () => <Tab.Pane>{TopicList}</Tab.Pane> }]
+    const inputSearch = <Input
+    icon='search'
+    placeholder='Search name...'
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+        handleSearch();
+        }
+    }}/>
+    const handleDropdownChange = (e, { value }) => {
+        setTopicId(value);
+        console.log(value);
+        console.log("drop")
+        
+      };
+
+    const TopicList = <Dropdown
+        placeholder='Select Topic'
+        fluid
+        search
+        selection
+        options={topics}
+        onChange={handleDropdownChange}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+            handleTopic(topic_id);
+            }
+        }}
+    />;
+    
+    
+      
   return (
     <Grid textAlign='center' style={{ height: '30vh', marginTop:'5vh' }} verticalAlign='middle'>
         <Grid.Row style={{ maxHeight: 100 }}>
             <Pagination defaultActivePage={1} totalPages={20} onPageChange={handleChange}/>
         </Grid.Row>
         <Grid.Row style={{ maxHeight: 100 }}>
-        <Input
-            icon='search'
-            placeholder='Search...'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                handleSearch();
-                }
-            }}/>
+        <Tab panes={tabPanes}/>
         </Grid.Row>
         <Grid.Row>
             <Item.Group style={{maxWidth: '55%'}} divided>
@@ -98,6 +139,7 @@ const displayJson = (data) => (
         {data.map(influencer => displayInfluencer(influencer))}
     </Item.Group>
   )
+
 export const displayInfluencer = (influencer) =>{
     return (
         <>
@@ -112,6 +154,9 @@ export const displayInfluencer = (influencer) =>{
                         </Item.Description>
                     
                     <Item.Extra>Additional Details</Item.Extra>
+                    <Item.Description>
+                            {influencer?.location}
+                    </Item.Description>
                     <Statistic size='tiny'>
                         <Statistic.Value>{influencer?.followers_count}</Statistic.Value>
                         <Statistic.Label>Followers</Statistic.Label>
@@ -124,16 +169,35 @@ export const displayInfluencer = (influencer) =>{
                         <Statistic.Value>{influencer?.listed_count}</Statistic.Value>
                         <Statistic.Label>Times Listed</Statistic.Label>
                     </Statistic>
+                    
                 </Item.Content>
             </Item>
         </>
     )
 }
-const getSearchQuery = async (searchQuery) => {
-    setTimeout(()=>{}, 2000);
-    let result = influencers.filter(x => x.username == searchQuery);
-    console.log("Dobol")
-    console.log(result)
-    return result
+const getSearchQuery = async (name) =>{
+    let resp;
+    try{
+        resp = await axios.get(INFLUENCER_BASIC,  {params: {
+            name: name
+          }});
+    } catch(error){
+        console.error(error);
+    }
+    return resp.data;
+}
+const getInfluencerByTopic = async (topic_id) =>{
+    let resp;
+    try{
+        resp = await axios.get(INFLUENCER_TOPIC_URL,  {params: {
+            topic_id: topic_id
+          }});
+        console.log("success")
+        console.log(resp)
+    } catch(error){
+        console.error(error);
+    }
+    
+    return resp.data;
 }
  

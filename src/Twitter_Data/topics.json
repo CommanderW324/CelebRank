@@ -1,0 +1,82 @@
+[
+    {
+        "key": "1",
+        "value": "1",
+        "text": "Entertainment"
+    },
+    {
+        "key": "2",
+        "value": "2",
+        "text": "Sports"
+    },
+    {
+        "key": "3",
+        "value": "3",
+        "text": "Art"
+    },
+    {
+        "key": "4",
+        "value": "4",
+        "text": "Photography"
+    },
+    {
+        "key": "5",
+        "value": "5",
+        "text": "Beauty"
+    },
+    {
+        "key": "6",
+        "value": "6",
+        "text": "Fashion"
+    },
+    {
+        "key": "7",
+        "value": "7",
+        "text": "Travel"
+    },
+    {
+        "key": "8",
+        "value": "8",
+        "text": "Animation"
+    },
+    {
+        "key": "9",
+        "value": "9",
+        "text": "Technology"
+    },
+    {
+        "key": "10",
+        "value": "10",
+        "text": "Vlog/Video"
+    },
+    {
+        "key": "11",
+        "value": "11",
+        "text": "Writer"
+    },
+    {
+        "key": "12",
+        "value": "12",
+        "text": "Actor"
+    },
+    {
+        "key": "13",
+        "value": "13",
+        "text": "Journalism"
+    },
+    {
+        "key": "14",
+        "value": "14",
+        "text": "Professional"
+    },
+    {
+        "key": "15",
+        "value": "15",
+        "text": "Education"
+    },
+    {
+        "key": "16",
+        "value": "16",
+        "text": "Music"
+    }
+]

@@ -1,0 +1,5 @@
+export const INFLUENCER_TOPIC_URL = 'https://f2axijdjz6pqj5obffyhhygrei0rjwav.lambda-url.us-east-1.on.aws/'
+export const INFLUENCER_BASIC = 'https://4swvjcml4bcj4znyn65pimzjri0igply.lambda-url.us-east-1.on.aws/'
+export const INFLUENCER_METRIC = 'https://u6sbguicghfhmezknoovkt6voe0qzocm.lambda-url.us-east-1.on.aws/'
+export const INFLUENCER_TREND = 'https://wvfdjmrlbeprg4jnuud7bkvn3y0txiaf.lambda-url.us-east-1.on.aws/'
+export const INFLUENCER_RECOMMENDATION = 'https://keg3rg3ab2st5qyp2zb2qq5acq0ftzgg.lambda-url.us-east-1.on.aws/'

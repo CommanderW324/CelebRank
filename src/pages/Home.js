@@ -101,7 +101,7 @@ class MobileContainer extends Component {
     const { sidebarOpened } = this.state
 
     return (
-      <Media as={Sidebar.Pushable} at='mobile'>
+      <Media at='mobile'>
         <Sidebar.Pushable>
           <Sidebar
             as={Menu}
@@ -202,7 +202,7 @@ const HomepageLayout = (user) => (
           <Link to="/influencers"> 
             <Button primary size='huge'>
               Get Started Now
-              <Icon name='right arrow' />
+              <Icon/>
             </Button>           
           </Link>
           </Grid.Column>

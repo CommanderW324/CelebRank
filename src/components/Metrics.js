@@ -1,10 +1,14 @@
 import React from 'react';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
+
 function MetricsDisplay({data, yaxis, xaxis}){
+    if(data == undefined){
+        data = [];
+    }
     let sortedData = data.sort((a, b) =>{
-        let dateA = new Date(a.retrieved_date);
-        let dateB = new Date(b.retrieved_date);
+        let dateA = new Date(a?.retrieved_date);
+        let dateB = new Date(b?.retrieved_date);
         console.log(dateA > dateB);
         return dateA < dateB ? -1 : 1;
     } )
