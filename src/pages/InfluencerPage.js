@@ -13,6 +13,8 @@ import influencers from '../Twitter_Data/influencers.json';
 import axios from 'axios'
 import { INFLUENCER_BASIC, INFLUENCER_METRIC, INFLUENCER_TOPIC_URL } from 'util/constants';
 import topics from '../Twitter_Data/topics.json'
+import { getInfluencerByTopic, getInfluencerData } from 'util/apicall';
+
 Amplify.configure(awsExports);
 
 function InfluencerPage({ signOut, user}) {
@@ -45,17 +47,27 @@ function InfluencerPage({ signOut, user}) {
         }
         setSearchResult(result);
     }
-    const handleTopic = async (topic_id) =>{
-        let result;
+    const handleTopic = async () =>{
+        let result_data;
+        let result_all;
         setIsSearch(true)
         try{
-            result = await getInfluencerByTopic(topic_id);
-            console.log(result.data)
-            console.log("Test topic")
+            result_data = await getInfluencerByTopic(topic_id);
+            let promises = []
+            for(let influencer of result_data) {
+                promises.push(getInfluencerData(influencer.twitter_user_id))
+            }
+            result_all = await Promise.all(promises);
+            console.log(result_data)
+            console.log("Bodh")
+            for(let i = 0; i < result_all.length; i++) {
+                result_all[i] = {...result_data[i], ...result_all[i]};
+            }
+            console.log(result_all)
         } catch(e){
             console.log(e)
         }
-        setSearchResult(result.data);
+        setSearchResult(result_all);
     }
     React.useEffect(()=>{
         if(influencersList.length < num * pageCount){
@@ -87,7 +99,7 @@ function InfluencerPage({ signOut, user}) {
         setTopicId(value);
         console.log(value);
         console.log("drop")
-        
+        console.log(e)
       };
 
     const TopicList = <Dropdown
@@ -99,7 +111,7 @@ function InfluencerPage({ signOut, user}) {
         onChange={handleDropdownChange}
         onKeyDown={(e) => {
             if (e.key === 'Enter') {
-            handleTopic(topic_id);
+                handleTopic();
             }
         }}
     />;
@@ -143,7 +155,12 @@ const displayJson = (data) => (
 export const displayInfluencer = (influencer) =>{
     return (
         <>
-            <Item >
+            <Item style={{ 
+                border: '1px solid black',
+                boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)',
+                padding: '10px',
+                borderRadius: '5px',
+                }}>
                 <Item.Image size='tiny' src={influencer?.profile_image_url}/>
                 <Item.Content >
                     
@@ -165,11 +182,6 @@ export const displayInfluencer = (influencer) =>{
                         <Statistic.Value>{influencer?.tweet_count}</Statistic.Value>
                         <Statistic.Label>Tweet Count</Statistic.Label>
                     </Statistic>
-                    <Statistic size='tiny'>
-                        <Statistic.Value>{influencer?.listed_count}</Statistic.Value>
-                        <Statistic.Label>Times Listed</Statistic.Label>
-                    </Statistic>
-                    
                 </Item.Content>
             </Item>
         </>
@@ -186,18 +198,5 @@ const getSearchQuery = async (name) =>{
     }
     return resp.data;
 }
-const getInfluencerByTopic = async (topic_id) =>{
-    let resp;
-    try{
-        resp = await axios.get(INFLUENCER_TOPIC_URL,  {params: {
-            topic_id: topic_id
-          }});
-        console.log("success")
-        console.log(resp)
-    } catch(error){
-        console.error(error);
-    }
-    
-    return resp.data;
-}
+
  

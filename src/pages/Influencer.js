@@ -8,40 +8,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { displayInfluencer } from './InfluencerPage';
 import MetricsDisplay from 'components/Metrics';
 import axios from 'axios'
-import { INFLUENCER_METRIC, INFLUENCER_RECOMMENDATION, INFLUENCER_TREND} from 'util/constants';
-const getInfluencerData = async (id) =>{
-    let resp;
-    try{
-        resp = await axios.get(INFLUENCER_METRIC,  {params: {
-            twitter_user_id: id
-          }});
-          console.log("Halo")
-        console.log(resp)
-    } catch(error){
-        console.error(error);
-    }
-    return resp.data[0];
-}
-const getInfluencersTweets = async (id) => {
+import { getInfluencerData, getInfluencerMetrics, getRecommendedInfluencer } from 'util/apicall';
+
+
+export const getInfluencersTweets = async (id) => {
     return tweets.filter(x => x.twitter_user_id == id);
 } 
-const getInfluencerMetrics = async (id) =>{
-    let resp;
-    try{
-        resp = await axios.get(INFLUENCER_TREND,  {params: {
-            twitter_user_id: id
-          }});
-    } catch(error){
-        console.error(error);
-    }
-    
-    return resp.data;
-}
+
+
 function Influencer({ signOut, user}) {
     const navigate = useNavigate();
     const [influencerProfile, setInfluencerProfile] = useState({})
     const [influencerTweets, setInfluencerTweets] = useState([])
     const [influencerMetrics, setInfluencerMetrics] = useState([])
+    const [influencerRecommendation, setRecom] = useState([])
     let {id} = useParams();
     const handleSignOut = ()=>{
       signOut();
@@ -50,19 +30,41 @@ function Influencer({ signOut, user}) {
     React.useEffect(()=>{
         const getData = async () => {
             console.log(id)
-            let [a, b, c] = await Promise.all([getInfluencerData(id), getInfluencerMetrics(id), getInfluencersTweets(id)]);
-            setInfluencerProfile(a);
+            let [a, b, c, d] = await Promise.all([getInfluencerData(id), getInfluencerMetrics(id), getInfluencersTweets(id), retrieveRecommendation()]);
+            setInfluencerProfile(a[0]);
             // @ts-ignore
             setInfluencerMetrics(b);
             setInfluencerTweets(c);
         }
         getData();
         
-    }, [])
+    }, [id]);
+    const retrieveRecommendation = async () =>{
+        let result_data;
+        let result_all;
+        try{
+            result_data = await getRecommendedInfluencer(id);
+            let promises = []
+            for(let influencer of result_data) {
+                promises.push(getInfluencerData(influencer.twitter_user_id))
+            }
+            result_all = await Promise.all(promises);
+            console.log(result_data)
+            console.log("Bodh")
+            for(let i = 0; i < result_all.length; i++) {
+                result_all[i] = {...result_data[i], ...result_all[i]};
+            }
+            console.log(result_all)
+        } catch(e){
+            console.log(e)
+        }
+        setRecom(result_all);
+    }
 
   return (
-    <Grid textAlign='center' style={{ height: '100vh', marginTop: '10vh'}} verticalAlign='middle'>
-        <Grid.Column style={{ maxWidth: '70%'}}>
+    <Grid textAlign="center" style={{ height: '100vh', marginTop: '10vh'}} verticalAlign='top'>
+        
+        <Grid.Column width={10}>
             <Item.Group>
                 {displayInfluencer(influencerProfile)}
             </Item.Group>
@@ -75,6 +77,16 @@ function Influencer({ signOut, user}) {
             <Grid.Row>
                 {<MetricsDisplay data={influencerMetrics} yaxis={'following_count'} xaxis={'retrieved_date'} />}
             </Grid.Row>
+        </Grid.Column>
+        <Grid.Column width={4} >
+            <Item.Group divided>
+            {influencerRecommendation?.map(x => {
+                return (
+                    <Grid.Row>
+                        {displayInfluencer(x)}
+                    </Grid.Row>
+                );})}
+            </Item.Group>
         </Grid.Column>
         
     </Grid>
