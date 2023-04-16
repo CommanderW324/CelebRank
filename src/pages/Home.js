@@ -202,7 +202,7 @@ const HomepageLayout = (user) => (
           <Link to="/influencers"> 
             <Button primary size='huge'>
               Get Started Now
-              <Icon/>
+              <Icon name='arrow' color='red' size='big' />
             </Button>           
           </Link>
           </Grid.Column>

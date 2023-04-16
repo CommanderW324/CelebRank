@@ -58,12 +58,13 @@ function InfluencerPage({ signOut, user}) {
                 promises.push(getInfluencerData(influencer.twitter_user_id))
             }
             result_all = await Promise.all(promises);
-            console.log(result_data)
+            console.log(result_all)
             console.log("Bodh")
             for(let i = 0; i < result_all.length; i++) {
-                result_all[i] = {...result_data[i], ...result_all[i]};
+                result_all[i] = {...result_data[i], ...result_all[i][0]};
             }
             console.log(result_all)
+            console.log("HelloBod")
         } catch(e){
             console.log(e)
         }
@@ -123,8 +124,8 @@ function InfluencerPage({ signOut, user}) {
         <Grid.Row style={{ maxHeight: 100 }}>
             <Pagination defaultActivePage={1} totalPages={20} onPageChange={handleChange}/>
         </Grid.Row>
-        <Grid.Row style={{ maxHeight: 100 }}>
-        <Tab panes={tabPanes}/>
+        <Grid.Row style={{ maxHeight: 100, marginBottom: "15px" }}>
+            <Tab panes={tabPanes}/>
         </Grid.Row>
         <Grid.Row>
             <Item.Group style={{maxWidth: '55%'}} divided>
@@ -157,7 +158,7 @@ export const displayInfluencer = (influencer) =>{
         <>
             <Item style={{ 
                 border: '1px solid black',
-                boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.5)',
+                boxShadow: '2px 2px 8px rgba(0, 0, 0, 0.01)',
                 padding: '10px',
                 borderRadius: '5px',
                 }}>

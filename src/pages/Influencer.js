@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Image, Grid, Button, Item } from 'semantic-ui-react';
+import { Card, Image, Grid, Button, Item, Header, Menu } from 'semantic-ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import tweets from '../Twitter_Data/tweets.json';
 import metrics from '../Twitter_Data/metrics-time.json';
@@ -43,17 +43,18 @@ function Influencer({ signOut, user}) {
         let result_data;
         let result_all;
         try{
+            console.log("Retrieve recommendation from ")
+            console.log(id)
             result_data = await getRecommendedInfluencer(id);
             let promises = []
             for(let influencer of result_data) {
                 promises.push(getInfluencerData(influencer.twitter_user_id))
             }
             result_all = await Promise.all(promises);
-            console.log(result_data)
-            console.log("Bodh")
             for(let i = 0; i < result_all.length; i++) {
                 result_all[i] = {...result_data[i], ...result_all[i]};
             }
+            console.log("Recommendation for %d", id)
             console.log(result_all)
         } catch(e){
             console.log(e)
@@ -62,23 +63,18 @@ function Influencer({ signOut, user}) {
     }
 
   return (
-    <Grid textAlign="center" style={{ height: '100vh', marginTop: '10vh'}} verticalAlign='top'>
+    <Grid textAlign="center" style={{ height: '100vh', marginTop: '10vh'}} verticalAlign='top' divided>
         
         <Grid.Column width={10}>
             <Item.Group>
                 {displayInfluencer(influencerProfile)}
             </Item.Group>
-            <Grid.Row>
-                {<MetricsDisplay data={influencerMetrics} yaxis={'followers_count'} xaxis={'retrieved_date'} />}
-            </Grid.Row>
-            <Grid.Row>
-                {<MetricsDisplay data={influencerMetrics} yaxis={'tweet_count'} xaxis={'retrieved_date'} />}
-            </Grid.Row>
-            <Grid.Row>
-                {<MetricsDisplay data={influencerMetrics} yaxis={'following_count'} xaxis={'retrieved_date'} />}
-            </Grid.Row>
+            {InfluencerMetrics({influencerMetrics})}
         </Grid.Column>
         <Grid.Column width={4} >
+            <Header as='h2' style={{ fontFamily: 'Arial', fontWeight: 'bold' }}>
+                 Recommended for You
+            </Header>
             <Item.Group divided>
             {influencerRecommendation?.map(x => {
                 return (
@@ -94,3 +90,44 @@ function Influencer({ signOut, user}) {
 }
 
 export default Influencer;
+
+const InfluencerMetrics = ({ influencerMetrics }) => {
+    const [activeItem, setActiveItem] = useState('followers_count');
+  
+    const handleItemClick = (e, { name }) => setActiveItem(name);
+  
+    return (
+      <Grid>
+        <Grid.Row >
+          <Menu pointing secondary>
+            <Menu.Item
+              name='followers_count'
+              active={activeItem === 'followers_count'}
+              onClick={handleItemClick}
+            />
+            <Menu.Item
+              name='tweet_count'
+              active={activeItem === 'tweet_count'}
+              onClick={handleItemClick}
+            />
+            <Menu.Item
+              name='following_count'
+              active={activeItem === 'following_count'}
+              onClick={handleItemClick}
+            />
+          </Menu>
+        </Grid.Row>
+        <Grid.Row>
+          {activeItem === 'followers_count' && (
+            <MetricsDisplay data={influencerMetrics} yaxis={'followers_count'} xaxis={'retrieved_date'} />
+          )}
+          {activeItem === 'tweet_count' && (
+            <MetricsDisplay data={influencerMetrics} yaxis={'tweet_count'} xaxis={'retrieved_date'} />
+          )}
+          {activeItem === 'following_count' && (
+            <MetricsDisplay data={influencerMetrics} yaxis={'following_count'} xaxis={'retrieved_date'} />
+          )}
+        </Grid.Row>
+      </Grid>
+    );
+  };

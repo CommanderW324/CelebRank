@@ -9,6 +9,7 @@ import {
     Segment,
     Sidebar,
   } from 'semantic-ui-react'
+import logo_small from '../assets/logo-small.png'
 function Header({isAuth, signOut}){
     const [fixed, setFixed] = useState(false);
 
@@ -38,14 +39,16 @@ function Header({isAuth, signOut}){
               size='large'
             >
               <Container>
-                <Menu.Item as='a' active>
-                  Home
+                <Menu.Item as={Link} to='/home'>
+                  <img src={logo_small} alt='CelebRank' style={{ height: '45px', width: '40px' }} />
+                  <span style={{ marginLeft: '10px', fontWeight: 'bold', fontSize: '20px' }}>CelebRank</span>
                 </Menu.Item>
-                <Menu.Item as='a'><Link to="/login"> Trial </Link></Menu.Item>
-                
-                <Menu.Item as='a'>Wokr</Menu.Item>
-                <Menu.Item as='a'>Company</Menu.Item>
-                <Menu.Item as='a'>Careers</Menu.Item>
+                <Menu.Item as='a' >
+                  <Link to="/home">
+                    Home
+                  </Link>
+                </Menu.Item>
+                <Menu.Item as='a'><Link to="/influencers"> Influencer Page </Link></Menu.Item>
                 <Menu.Item position='right'>
                   {isAuth ? 
                   <><Link to="/profile">

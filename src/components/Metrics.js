@@ -16,7 +16,7 @@ function MetricsDisplay({data, yaxis, xaxis}){
     console.log(data);
     return (
         <>
-            <LineChart width={700} height={300} data={sortedData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+            <LineChart width={700} height={300} data={sortedData} margin={{ top: 5, right: 20, bottom: 5, left: 10 }}>
                 <Legend verticalAlign="top" height={36}/>
                 <Line name=""type="monotone" dataKey={yaxis} stroke="#8884d8" />
                 <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
